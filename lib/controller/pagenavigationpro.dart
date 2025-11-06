@@ -5,6 +5,7 @@ int pageindex = 0;
 int iconindex = 0;
   void changeindex(int index) {
     this.iconindex = index;
+    this.pageindex = index;
     notifyListeners();
   }
 }
