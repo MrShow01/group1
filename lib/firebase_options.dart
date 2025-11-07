@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -48,6 +39,15 @@ class DefaultFirebaseOptions {
         );
     }
   }
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDZehUSKxTClTYDa2JWXi5UwlmZ8AEJSoE',
+    appId: '1:1060805639621:web:e11a77c55876fd27731fac',
+    messagingSenderId: '1060805639621',
+    projectId: 'group1-cd189',
+    authDomain: 'group1-cd189.firebaseapp.com',
+    storageBucket: 'group1-cd189.firebasestorage.app',
+  );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB_KhpXAqQ3UKQCbwAPDVZkOo-JkRcOsv4',
@@ -66,4 +66,21 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.g1',
   );
 
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyBYyqAwWNXAqeKzdNPmnuRkIIpmgoLs_WQ',
+    appId: '1:1060805639621:ios:a57336d2d3a702b4731fac',
+    messagingSenderId: '1060805639621',
+    projectId: 'group1-cd189',
+    storageBucket: 'group1-cd189.firebasestorage.app',
+    iosBundleId: 'com.example.g1',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDZehUSKxTClTYDa2JWXi5UwlmZ8AEJSoE',
+    appId: '1:1060805639621:web:939ddb22535a7cd4731fac',
+    messagingSenderId: '1060805639621',
+    projectId: 'group1-cd189',
+    authDomain: 'group1-cd189.firebaseapp.com',
+    storageBucket: 'group1-cd189.firebasestorage.app',
+  );
 }
