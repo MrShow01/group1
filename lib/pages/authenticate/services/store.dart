@@ -8,13 +8,13 @@ class StoreService extends ChangeNotifier {
   CollectionReference users = FirebaseFirestore.instance.collection(
     "Students",
   );
-  CollectionReference myUsers = FirebaseFirestore.instance.collection("MyUser");
+  // CollectionReference myUsers = FirebaseFirestore.instance.collection("Students");
   List<Student> userList = [];
 
   Future<void> addStudent(Student myUser) async {
     // remove @gmail.com from email
     String docName = myUser.email.split("@")[0];
-    myUsers
+    users
         .doc(docName)
         .set({
           "email": myUser.email,
