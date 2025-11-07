@@ -1,11 +1,19 @@
-// import 'package:khotwa/providers/login_model.dart';
-import '/authenticate/LoginPage.dart';
+import 'dart:developer';
+
+import 'AccountPage.dart';
+// import '/home/home.dart';
+import 'services/auth.dart';
 import 'package:flutter/material.dart';
-import '/services/auth.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:get_android/services/messaging.dart';
+
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 // ignore: must_be_immutable
-class CreateAccountPage extends StatelessWidget {
-  CreateAccountPage({super.key});
+class Login extends StatelessWidget {
+  Login({super.key});
   final formKey = GlobalKey<FormState>();
   Color myBlack = Color(0xff272727);
   Color lightWhite = Color(0xffF4F4F4);
@@ -21,7 +29,6 @@ class CreateAccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: SingleChildScrollView(
         padding: EdgeInsets.only(
           left: 15,
@@ -34,32 +41,12 @@ class CreateAccountPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 30),
-            Text(
-              "Create Account",
-              style: TextStyle(color: myBlack, fontSize: 32),
-            ),
+            Text("Sign in", style: TextStyle(color: myBlack, fontSize: 32)),
             Form(
               key: formKey,
               child: Column(
                 spacing: 10,
                 children: [
-                  TextFormField(
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                      fillColor: lightWhite,
-                      filled: true,
-                      labelText: "Name",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: primary),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(color: Colors.blue, width: 2),
-                      ),
-                    ),
-                    style: TextStyle(color: primary, fontSize: 16),
-                  ),
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     controller: emailController,
@@ -78,6 +65,7 @@ class CreateAccountPage extends StatelessWidget {
                     ),
                     style: TextStyle(color: primary, fontSize: 16),
                   ),
+
                   TextFormField(
                     keyboardType: TextInputType.visiblePassword,
                     controller: passwordController,
@@ -96,26 +84,7 @@ class CreateAccountPage extends StatelessWidget {
                     ),
                     style: TextStyle(color: primary, fontSize: 16),
                   ),
-                  TextFormField(
-                    controller: csController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: 'cs'),
-                  ),
-                  TextFormField(
-                    controller: itController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: 'it'),
-                  ),
-                  TextFormField(
-                    controller: isController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: 'is'),
-                  ),
-                  TextFormField(
-                    controller: tsController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: 'ts'),
-                  ),
+                  
                 ],
               ),
             ),
@@ -128,34 +97,21 @@ class CreateAccountPage extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 16),
                 ),
                 onPressed: () async {
-                  final result = await _authService.registerEmailPass(
+                  final user = await _authService.signinEmailPass(
                     emailController.text,
                     passwordController.text,
+                    context,
                   );
-                  if (result == null) {
+                  if (user == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("something went wrong")),
+                      SnackBar(
+                        content: Text("something went wrong"),
+                        behavior: SnackBarBehavior.floating,
+                      ),
                     );
                   } else {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text("Firebase Register"),
-                          content: Text("تم الحفظ بنجاح"),
-                          actions: [
-                            TextButton(
-                              child: Text("موافق"),
-                              onPressed: () {
-                                Navigator.of(context).pop(); // يقفل الرسالة
-                                Navigator.of(
-                                  context,
-                                ).pop(); // يقفل الصفحة اللي انت فيها
-                              },
-                            ),
-                          ],
-                        );
-                      },
+                    log(
+                      "my normal user : $user , with id: ${user.uid}, email:${user.email}",
                     );
                   }
                 },
@@ -165,18 +121,52 @@ class CreateAccountPage extends StatelessWidget {
                 ),
               ),
             ),
-            Text("", style: TextStyle(color: myBlack)),
+            // Text(loginWatch.massage, style: TextStyle(color: myBlack)),
+            Text("Dont have an Account ? ", style: TextStyle(color: myBlack)),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateAccountPage()),
+                );
+              },
+              child: Text("Create One", style: TextStyle(color: primary)),
+            ),
+
             Row(
+              spacing: 10,
               children: [
-                Text("Have account ? ", style: TextStyle(color: myBlack)),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Login()),
-                    );
-                  },
-                  child: Text("login", style: TextStyle(color: primary)),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: TextButton(
+                      onPressed: () async {
+                        String massage;
+                        final result = await _authService.signInAnon();
+                        if (result == null) {
+                          massage = "we have null in return";
+                        } else {
+                          massage = "we have a user somehow ";
+                        }
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(massage),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                        // print(result);
+                      },
+                      child: Text(
+                        "Sign in anonymous",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
