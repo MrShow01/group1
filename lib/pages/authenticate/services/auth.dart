@@ -1,6 +1,8 @@
 import "dart:developer";
 // import "models/user.dart";
 import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter/material.dart";
+import "package:g1/base.dart";
 
 class AuthService {
   final String firstCollection = "first_collection";
@@ -29,11 +31,15 @@ class AuthService {
   }
 
   // sign in with email & password
-  Future<User?> signinEmailPass(String email, String password) async {
+  Future<User?> signinEmailPass(String email, String password, BuildContext context) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Base()),
       );
       return (credential.user);
     } on FirebaseAuthException catch (e) {
@@ -41,17 +47,13 @@ class AuthService {
         log('No user found for that email.');
       } else if (e.code == 'wrong-password') {
         log('Wrong password provided for that user.');
-      }
-      else if (e.code == 'invalid-email') {
+      } else if (e.code == 'invalid-email') {
         log('invalid-email');
-      }
-      else if (e.code == 'invalid-email-verified') {
+      } else if (e.code == 'invalid-email-verified') {
         log('invalid-email-verified');
-      }
-      else if (e.code == 'invalid-password') {
+      } else if (e.code == 'invalid-password') {
         log('invalid-password');
-      }
-      else if (e.code == 'uid-already-exists') {
+      } else if (e.code == 'uid-already-exists') {
         log('uid-already-exists');
       }
       return null;
@@ -59,27 +61,32 @@ class AuthService {
   }
 
   // sign register with email & password
-  Future<UserCredential?> registerEmailPass(String email, String password) async {
+  Future<UserCredential?> registerEmailPass(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     try {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       log("registered and returned UserCredential");
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Base()),
+      );
       return credential;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         log('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
         log('The account already exists for that email.');
-      }else if (e.code == 'invalid-email') {
+      } else if (e.code == 'invalid-email') {
         log('invalid-email');
-      }
-      else if (e.code == 'invalid-email-verified') {
+      } else if (e.code == 'invalid-email-verified') {
         log('invalid-email-verified');
-      }
-      else if (e.code == 'invalid-password') {
+      } else if (e.code == 'invalid-password') {
         log('invalid-password');
-      }
-      else if (e.code == 'uid-already-exists') {
+      } else if (e.code == 'uid-already-exists') {
         log('uid-already-exists');
       }
       return null;
@@ -90,13 +97,12 @@ class AuthService {
   }
 
   // sign out
-  Future singOut() async{
-    try{
+  Future singOut() async {
+    try {
       return await _auth.signOut();
-    }catch(e){
+    } catch (e) {
       log(e.toString());
       return null;
     }
   }
-
 }
