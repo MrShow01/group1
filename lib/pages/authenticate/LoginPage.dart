@@ -132,44 +132,6 @@ class Login extends StatelessWidget {
               },
               child: Text("Create One", style: TextStyle(color: primary)),
             ),
-
-            Row(
-              spacing: 10,
-              children: [
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: TextButton(
-                      onPressed: () async {
-                        String massage;
-                        final result = await _authService.signInAnon();
-                        if (result == null) {
-                          massage = "we have null in return";
-                        } else {
-                          massage = "we have a user somehow ";
-                        }
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(massage),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
-                        // print(result);
-                      },
-                      child: Text(
-                        "Sign in anonymous",
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),

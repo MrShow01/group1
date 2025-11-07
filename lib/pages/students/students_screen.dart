@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:g1/pages/authenticate/services/auth.dart';
 
 class StudentsScreen extends StatelessWidget {
   const StudentsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    AuthService authService = AuthService();
     return Scaffold(
-      appBar: AppBar(title: const Text('Students'), elevation: 0),
+      appBar: AppBar(
+        title: const Text('Students'),
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Color.fromARGB(255, 0, 0, 0)),
+            onPressed: () {
+              // Action for the add button
+              authService.singOut();
+            },
+          ),
+        ],
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('Students').snapshots(),
         builder: (context, snapshot) {
@@ -93,7 +107,6 @@ class _StudentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -181,7 +194,6 @@ class _StudentCard extends StatelessWidget {
                 ),
               ],
             ),
-
           ],
         ),
       ),
