@@ -6,6 +6,9 @@ import 'package:g1/pages/authenticate/services/store.dart';
 import 'package:g1/pages/authenticate/services/auth.dart';
 // import 'package:g1/pages/authenticate/LoginPage.dart';
 // import 'package:g1/base.dart';
+import 'package:g1/pages/authenticate/LoginPage.dart';
+import 'package:g1/base.dart';
+import 'package:g1/pages/mainpage/controller/liststd.dart';
 import '/controller/pagenavigationpro.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -24,6 +27,7 @@ Future<void> main() async {
           value: AuthService().user,
           initialData: null,
         ),
+    ChangeNotifierProvider(create: (context) => Liststdnotifier()),
   ], child: const MyApp()));
 
 }

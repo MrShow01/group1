@@ -1,9 +1,8 @@
-// import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:g1/controller/pagenavigationpro.dart';
 
 import 'package:g1/pages/mainpage/mainpage.dart';
+import 'package:g1/pages/students/students_screen.dart';
 import 'package:provider/provider.dart';
 
     
@@ -14,7 +13,10 @@ class Base extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pro =Provider.of<PagenavigatorNotifier>(context);
-    const List<Widget> _widgetOptions = <Widget>[Mainpage()];
+    const List<Widget> _widgetOptions = <Widget>[
+      Mainpage(),
+      StudentsScreen(),
+    ];
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: pro.iconindex,
@@ -28,16 +30,8 @@ class Base extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_outline,),
-            label: 'Saved',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart_outlined,),
-            label: 'Cart',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline,),
-            label: 'Account',
+            icon: Icon(Icons.school_outlined,),
+            label: 'Students',
           ),
         ],
       ),
