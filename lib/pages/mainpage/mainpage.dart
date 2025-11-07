@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:g1/pages/mainpage/controller/liststd.dart';
+import 'package:g1/pages/subjects/controller/liststd.dart';
 import 'package:provider/provider.dart';
 
 class Mainpage extends StatelessWidget {
