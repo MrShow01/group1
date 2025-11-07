@@ -61,7 +61,7 @@ class AuthService {
   }
 
   // sign register with email & password
-  Future<UserCredential?> registerEmailPass(
+  Future<User?> registerEmailPass(
     String email,
     String password,
     BuildContext context,
@@ -69,12 +69,12 @@ class AuthService {
     try {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      log("registered and returned UserCredential");
+      log("registered and returned User");
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Base()),
       );
-      return credential;
+      return credential.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         log('The password provided is too weak.');

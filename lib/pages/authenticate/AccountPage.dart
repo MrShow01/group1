@@ -1,4 +1,10 @@
 // import 'package:khotwa/providers/login_model.dart';
+import 'dart:developer';
+
+import 'package:g1/models/student.dart';
+import 'package:g1/pages/authenticate/services/store.dart';
+import 'package:provider/provider.dart';
+
 import 'LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'services/auth.dart';
@@ -10,6 +16,7 @@ class CreateAccountPage extends StatelessWidget {
   Color myBlack = Color(0xff272727);
   Color lightWhite = Color(0xffF4F4F4);
   Color primary = Color(0xff8E6CEF);
+  final nameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
   final csController = TextEditingController();
@@ -20,6 +27,7 @@ class CreateAccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final storeProvider = Provider.of<StoreService>(context);
     return Scaffold(
       
       body: SingleChildScrollView(
@@ -45,6 +53,7 @@ class CreateAccountPage extends StatelessWidget {
                 children: [
                   TextFormField(
                     keyboardType: TextInputType.name,
+                    controller: nameController,
                     decoration: InputDecoration(
                       fillColor: lightWhite,
                       filled: true,
@@ -128,7 +137,10 @@ class CreateAccountPage extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 16),
                 ),
                 onPressed: () async {
-                  final result = await _authService.registerEmailPass(
+                  try {
+                    Student student = Student(nameController.text, emailController.text, int.parse(csController.text), int.parse(itController.text), int.parse(isController.text), int.parse(tsController.text));
+                    storeProvider.addStudent(student);
+                    final result = await _authService.registerEmailPass(
                     emailController.text,
                     passwordController.text,
                     context,
@@ -137,26 +149,15 @@ class CreateAccountPage extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("something went wrong")),
                     );
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text("Firebase Register"),
-                          content: Text("تم الحفظ بنجاح"),
-                          actions: [
-                            TextButton(
-                              child: Text("موافق"),
-                              onPressed: () {
-                                Navigator.of(context).pop(); // يقفل الرسالة
-                                Navigator.of(
-                                  context,
-                                ).pop(); // يقفل الصفحة اللي انت فيها
-                              },
-                            ),
-                          ],
-                        );
-                      },
+                  }else{
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("تم الحفظ بنجاح"),),
+                    );
+                  }
+                  } catch (e) {
+                    log("couldn't do int parse for grades");
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("please enter all fields")),
                     );
                   }
                 },
