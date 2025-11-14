@@ -17,6 +17,7 @@ class StoreService extends ChangeNotifier {
     users
         .doc(docName)
         .set({
+          "uid": myUser.uid,
           "email": myUser.email,
           "name": myUser.name,
           "cs": myUser.csGrade,
@@ -37,7 +38,7 @@ class StoreService extends ChangeNotifier {
     userList.clear();
     for (var doc in snapshot.docs) {
       userList.add(
-        Student(doc["name"], doc["email"], doc["cs"], doc["is"], doc["it"], doc["ts"]),
+        Student(doc.id,doc["name"], doc["email"], doc["cs"], doc["is"], doc["it"], doc["ts"]),
       );
     }
     notifyListeners();
