@@ -138,8 +138,7 @@ class CreateAccountPage extends StatelessWidget {
                 ),
                 onPressed: () async {
                   try {
-                    Student student = Student(nameController.text, emailController.text, int.parse(csController.text), int.parse(itController.text), int.parse(isController.text), int.parse(tsController.text));
-                    storeProvider.addStudent(student);
+                    
                     final result = await _authService.registerEmailPass(
                     emailController.text,
                     passwordController.text,
@@ -150,6 +149,8 @@ class CreateAccountPage extends StatelessWidget {
                       SnackBar(content: Text("something went wrong")),
                     );
                   }else{
+                    Student student = Student(result.uid,nameController.text, emailController.text, int.parse(csController.text), int.parse(itController.text), int.parse(isController.text), int.parse(tsController.text));
+                    storeProvider.addStudent(student);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("تم الحفظ بنجاح"),),
                     );
