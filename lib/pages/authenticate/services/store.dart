@@ -5,9 +5,7 @@ import 'package:flutter/foundation.dart';
 import '/models/student.dart';
 
 class StoreService extends ChangeNotifier {
-  CollectionReference users = FirebaseFirestore.instance.collection(
-    "Students",
-  );
+  CollectionReference users = FirebaseFirestore.instance.collection("Students");
   // CollectionReference myUsers = FirebaseFirestore.instance.collection("Students");
   List<Student> userList = [];
 
@@ -38,7 +36,15 @@ class StoreService extends ChangeNotifier {
     userList.clear();
     for (var doc in snapshot.docs) {
       userList.add(
-        Student(doc.id,doc["name"], doc["email"], doc["cs"], doc["is"], doc["it"], doc["ts"]),
+        Student(
+          doc.id,
+          doc["name"],
+          doc["email"],
+          doc["cs"],
+          doc["is"],
+          doc["it"],
+          doc["ts"],
+        ),
       );
     }
     notifyListeners();
@@ -46,5 +52,30 @@ class StoreService extends ChangeNotifier {
 
   Future<void> remove_user(String docID) async {
     await users.doc(docID).delete();
+  }
+
+  Future<void> updateStudent(Student myUser) async {
+    // remove @gmail.com from email
+    if (myUser.email.isEmpty || !myUser.email.contains("@")) {
+      throw ArgumentError("Email must be a valid non-empty string");
+    }
+    String docName = myUser.email.split("@")[0];
+    users
+        .doc(docName)
+        .set({
+          "uid": myUser.uid,
+          "email": myUser.email,
+          "name": myUser.name,
+          "cs": myUser.csGrade,
+          "it": myUser.itGrade,
+          "is": myUser.isGrade,
+          "ts": myUser.tsGrade,
+        }, SetOptions(merge: true))
+        .then((value) {
+          log("User Saved: $docName");
+        })
+        .catchError((error) {
+          log("Failed to save user data to firestore: $error");
+        });
   }
 }

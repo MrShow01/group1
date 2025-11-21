@@ -1,9 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:g1/pages/authenticate/services/auth.dart';
+import 'package:provider/provider.dart';
 
+import '../../controller/pAuth.dart';
+import '../home/views/home_page.dart';
 class StudentsScreen extends StatelessWidget {
   const StudentsScreen({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +83,7 @@ class StudentsScreen extends StatelessWidget {
                 isScore: data['is'] ?? 0,
                 it: data['it'] ?? 0,
                 ts: data['ts'] ?? 0,
+                uID: data['uid']?? '',
               );
             },
           );
@@ -90,6 +97,7 @@ class _StudentCard extends StatelessWidget {
   final String documentId;
   final String name;
   final String email;
+  final String uID;
   final int cs;
   final int isScore;
   final int it;
@@ -99,6 +107,7 @@ class _StudentCard extends StatelessWidget {
     required this.documentId,
     required this.name,
     required this.email,
+    required this.uID,
     required this.cs,
     required this.isScore,
     required this.it,
@@ -161,6 +170,18 @@ class _StudentCard extends StatelessWidget {
                           ),
                         ],
                       ),
+                      ElevatedButton(
+                        onPressed: () {
+                          final pauth = Provider.of<Pauth>(context, listen: false).UIDauthed;
+
+                          if (uID == pauth) {
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=> HomePage()));
+                          }
+                        },
+                        child: Text("Edit"),
+                      ),
+
+                      Text(uID)
                     ],
                   ),
                 ),

@@ -1,7 +1,14 @@
-import 'package:activity/features/home/widgets/custom_field.dart';
-import 'package:activity/shared/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:g1/models/student.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../../../controller/pAuth.dart';
+import '../../authenticate/services/store.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/custom_field.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,9 +22,14 @@ class _HomePageState extends State<HomePage> {
   final isController = TextEditingController();
   final itController = TextEditingController();
   final tsController = TextEditingController();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final pauth = Provider.of<Pauth>(context, listen: false).UIDauthed;
+    final UpdateFunc = Provider.of<StoreService>(context);
+
     return Scaffold(
       backgroundColor: Color(0xffF9F8F6),
       body: SingleChildScrollView(
@@ -61,7 +73,74 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               Gap(20),
-              CustomButton(text: "update", onTap: () {}),
+              CustomButton(
+                text: "update",
+                onTap: () async {
+                  try {
+                    // Get current user's data automatically
+                    final currentUser = FirebaseAuth.instance.currentUser;
+                    if (currentUser == null ||
+                        currentUser.email == null ||
+                        currentUser.email!.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("No authenticated user found"),
+                        ),
+                      );
+                      return;
+                    }
+
+                    // Validate that all fields are filled
+                    if (csController.text.isEmpty ||
+                        itController.text.isEmpty ||
+                        isController.text.isEmpty ||
+                        tsController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Please enter all grade fields"),
+                        ),
+                      );
+                      return;
+                    }
+
+                    // Get student name from Firestore
+                    String docName = currentUser.email!.split("@")[0];
+                    final docSnapshot = await FirebaseFirestore.instance
+                        .collection("Students")
+                        .doc(docName)
+                        .get();
+
+                    String studentName =
+                        docSnapshot.data()?["name"] ??
+                        currentUser.displayName ??
+                        "Student";
+
+                    Student student = Student(
+                      currentUser.uid,
+                      studentName,
+                      currentUser.email!,
+                      int.parse(csController.text),
+                      int.parse(itController.text),
+                      int.parse(isController.text),
+                      int.parse(tsController.text),
+                    );
+                    UpdateFunc.updateStudent(student);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Student updated successfully"),
+                      ),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Please enter valid numbers for all grades",
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),

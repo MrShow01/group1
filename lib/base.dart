@@ -17,12 +17,12 @@ class Base extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pro =Provider.of<PagenavigatorNotifier>(context);
-    const List<Widget> _widgetOptions = <Widget>[
+    final List<Widget> _widgetOptions = <Widget>[
       StudentsScreen(),
-      Csui(),
-      Isui(),
-      Itui(),
-      Tsui()
+      const Csui(),
+      const Isui(),
+      const Itui(),
+      const Tsui()
     ];
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(

@@ -6,18 +6,43 @@ import 'package:g1/base.dart';
 import 'package:g1/pages/authenticate/LoginPage.dart';
 import 'package:g1/pages/authenticate/services/auth.dart';
 import 'package:provider/provider.dart';
+import 'package:g1/controller/pAuth.dart';
 
-class Wrapper extends StatelessWidget {
+class Wrapper extends StatefulWidget {
+  const Wrapper({super.key});
+
+  @override
+  State<Wrapper> createState() => _WrapperState();
+}
+
+class _WrapperState extends State<Wrapper> {
   final AuthService _authService = AuthService();
+  String? _lastUserUid;
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User?>(context);
     log("wrapper listening user: $user");
 
-    if(user == null ) return Login();
-    else return Base();
+    if (user == null) {
+      _lastUserUid = null;
+      return Login();
+    } else {
+      // Set the UID in Pauth provider when user is detected
+      // Check if this is a new user or UID hasn't been set yet
+      if (_lastUserUid != user.uid) {
+        final pauth = Provider.of<Pauth>(context, listen: false);
+        // Always update if UID is empty or different from current user
+        if (pauth.UIDauthed != user.uid && user.uid.isNotEmpty) {
+          pauth.uIDSet(user.uid);
+          log("UID set in Wrapper: ${user.uid}");
+          _lastUserUid = user.uid;
+        }
+      }
+      return Base();
+    }
   }
+
   // @override
   // Widget build(BuildContext context) {
   //   return StreamBuilder<User?>(

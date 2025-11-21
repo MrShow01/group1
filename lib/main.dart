@@ -11,6 +11,7 @@ import 'package:g1/base.dart';
 import 'package:g1/pages/subjects/controller/liststd.dart';
 import '/controller/pagenavigationpro.dart';
 import 'package:provider/provider.dart';
+import 'controller/pAuth.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -28,6 +29,8 @@ Future<void> main() async {
           initialData: null,
         ),
     ChangeNotifierProvider(create: (context) => Liststdnotifier()),
+    ChangeNotifierProvider(create: (_) => Pauth())
+
   ], child: const MyApp()));
 
 }

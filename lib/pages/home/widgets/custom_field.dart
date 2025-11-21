@@ -7,8 +7,8 @@ class CustomField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: "grade",
-      //controller: controller,
+      controller: controller,
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
         label: Text(label),
         enabledBorder: OutlineInputBorder(

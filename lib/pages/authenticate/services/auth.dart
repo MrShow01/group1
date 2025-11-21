@@ -3,12 +3,13 @@ import "dart:developer";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:g1/base.dart";
+import "package:g1/controller/pAuth.dart";
+import "package:provider/provider.dart";
 
 class AuthService {
   final String firstCollection = "first_collection";
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  // creat user obj based on the firebase User
+  // create user obj based on the firebase User
   // MyUser? _userFromFirebase(User? user) {
   //   return user != null ? MyUser(uid: user.uid, email: user.email ?? "", name: user.email??"", phone: user.phoneNumber??"", isAnonymous: user.isAnonymous) : null;
   // }
@@ -31,16 +32,20 @@ class AuthService {
   }
 
   // sign in with email & password
-  Future<User?> signinEmailPass(String email, String password, BuildContext context) async {
+  Future<User?> signinEmailPass(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Base()),
-      );
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Base()));
+      if (credential.user != null) {
+        Provider.of<Pauth>(context, listen: false).uIDSet(credential.user!.uid);
+      }
       return (credential.user);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -70,10 +75,10 @@ class AuthService {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       log("registered and returned User");
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Base()),
-      );
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Base()));
+      if (credential.user != null) {
+        Provider.of<Pauth>(context, listen: false).uIDSet(credential.user!.uid);
+      }
       return credential.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -91,7 +96,7 @@ class AuthService {
       }
       return null;
     } catch (e) {
-      log("error in firebase creating user with eamil and password $e");
+      log("error in firebase creating user with email and password $e");
       return null;
     }
   }
